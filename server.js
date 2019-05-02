@@ -16,7 +16,7 @@ app.use(
 );
 
 app.get('/', (req, res) => {
-  res.send('hello');
+  res.send('smoke test');
 });
 
 app.use('/users', users);
