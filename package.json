@@ -1,0 +1,29 @@
+{
+  "name": "knex-shopping",
+  "version": "1.0.0",
+  "description": "knex-shopping",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/bflores88/knex-shopping.git"
+  },
+  "keywords": [
+    "knex-shopping"
+  ],
+  "author": "brenda flores",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/bflores88/knex-shopping/issues"
+  },
+  "homepage": "https://github.com/bflores88/knex-shopping#readme",
+  "dependencies": {
+    "body-parser": "^1.19.0",
+    "dotenv": "^7.0.0",
+    "express": "^4.16.4",
+    "knex": "^0.16.5",
+    "pg": "^7.10.0"
+  }
+}
