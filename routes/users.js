@@ -23,10 +23,9 @@ router.route('/:user_id').get((req, res) => {
 });
 
 router.route('/login').post((req, res) => {
-let query = req.body.email;
   
   knex
-    .raw('select * from users where email = ?', [query])
+    .raw('select * from users where email = ?', [req.body.email])
     .then(function(userObject) {
       if(userObject.rows.length === 0){
         throw '{ "message": "User not found" }';
@@ -45,7 +44,28 @@ let query = req.body.email;
     .catch((err) => {
       res.send(err);
     })
-    
 });
+
+router.route('/register')
+  .post((req, res) => {
+
+    knex.raw('select * from users where email = ?', [req.body.email])
+      .then(function(userObject){
+        if(userObject.rows.length !== 0){
+          throw '{ "message": "User already exists" }' 
+        }
+        return req.body;
+      })
+      .then(function(newUser){
+        console.log(newUser);
+        return knex.raw('insert into users (email, password) values (?, ?) returning *', [newUser.email, newUser.password])
+      })
+      .then(function(newUser){
+        res.send(newUser.rows);
+      })
+      .catch((err) => {
+        res.send(err);
+      })
+  })
 
 module.exports = router;
