@@ -15,6 +15,10 @@ app.use(
   }),
 );
 
+app.get('/', (req, res) => {
+  res.send('hello');
+});
+
 app.use('/users', users);
 
 app.use('/products', products);
