@@ -85,6 +85,16 @@ router.route('/:user_id/:product_id')
       return req.params;
     })
     .then((params) => {
+      return knex.raw('select from carts where user_id = ? and product_id = ?', [params.user_id, params.product_id])
+    })
+    .then((productObject) => {
+      if(productObject.rows.length === 0){
+        throw `{ "message": "User ID: ${req.params.user_id} does not have any products with Product ID: ${req.params.product_id} in the cart!"}`;
+      }
+
+      return req.params;
+    })
+    .then((params) => {
       return knex.raw('delete from carts where user_id = ? and product_id = ? returning *', [params.user_id, params.product_id])
     })
     .then((cartObject) => {
