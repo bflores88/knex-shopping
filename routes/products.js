@@ -32,6 +32,32 @@ router.route('/:product_id').get((req, res) => {
     });
 });
 
-router.route('/new');
+router.route('/new')
+  .post((req, res) => {
+    knex
+    .raw('select * from products where title = ?', [req.body.title])
+    .then(function(productObject) {
+      if (productObject.rows.length !== 0) {
+        throw '{ "message": "Product already exists" }';
+      }
+      return req.body;
+    })
+    .then(function(newProduct) {
+      return knex.raw('insert into products (title, description, inventory, price) values (?, ?, ?, ?) returning *', [
+        newProduct.title,
+        newProduct.description,
+        newProduct.inventory,
+        newProduct.price
+      ]);
+    })
+    .then(function(newProductDetail) {
+      res.send(newProductDetail.rows);
+    })
+    .catch((err) => {
+      res.send(err);
+    });
+
+
+  })
 
 module.exports = router;

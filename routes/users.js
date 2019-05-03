@@ -89,14 +89,13 @@ router.route('/register').post((req, res) => {
       return req.body;
     })
     .then(function(newUser) {
-      console.log(newUser);
       return knex.raw('insert into users (email, password) values (?, ?) returning *', [
         newUser.email,
         newUser.password,
       ]);
     })
-    .then(function(newUser) {
-      res.send(newUser.rows);
+    .then(function(newUserDetail) {
+      res.send(newUserDetail.rows);
     })
     .catch((err) => {
       res.send(err);
