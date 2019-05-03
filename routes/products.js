@@ -43,6 +43,13 @@ router.route('/new')
       return req.body;
     })
     .then(function(newProduct) {
+      if(!newProduct.title ||
+        !newProduct.description ||
+        !newProduct.inventory ||
+        !newProduct.price){
+          throw '{ "message": "Must POST all product fields" }';
+        }
+        
       return knex.raw('insert into products (title, description, inventory, price) values (?, ?, ?, ?) returning *', [
         newProduct.title,
         newProduct.description,
