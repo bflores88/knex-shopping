@@ -9,16 +9,13 @@ router
       .raw('select * from users where id = ?', [req.params.user_id])
       .then(function(userObject) {
         if (userObject.rows.length === 0) {
-          throw err;
+          return res.status(404).send('{ "message": "User not found!" }');
         }
         
-        res.status(200);
-        res.send(userObject.rows);
-        process.exit();
+        return res.status(200).send(userObject.rows);
       })
       .catch((err) => {
-        res.status(400);
-        res.send(`{ message: 'User not found' }`);
+        return res.status(500).send(`{ message: 'Database error' }`);
       });
   })
   .delete((req, res) => {
@@ -26,7 +23,7 @@ router
       .raw('select * from users where id = ?', [req.params.user_id])
       .then(function(userObject) {
         if (userObject.rows.length === 0) {
-          throw '{ "message": "User ID not found" }';
+          return res.status(404).send('{ "message": "User ID not found" }');
         }
 
         let userDetail = userObject.rows[0];
@@ -34,31 +31,25 @@ router
         return knex.raw('delete from users where id = ? returning *', [userDetail.id]);
       })
       .then(function(deleteReturn) {
-        res.status(200);
-        res.send(`{ "message": "User id: ${req.params.user_id} successfully deleted" }`);
+        return res.status(200).send(`{ "message": "User id: ${req.params.user_id} successfully deleted" }`);
       })
       .catch((err) => {
-        res.status(400);
-        res.send(err);
+        return res.status(500).send('{ "message": "Database error" }');
       });
   });
 
 router.route('/:user_id/forgot-password').put((req, res) => {
   if (req.body.password === '') {
-    res.status(400);
-    res.send('{ "message": "Insert new password!" }');
-    return;
+    return res.status(400).send('{ "message": "Insert new password!" }');
   }
 
   knex
     .raw('update users set password = ? where id = ?', [req.body.password, req.params.user_id])
     .then(function() {
-      res.status(400);
-      res.send('{ "message": "New password created!" }');
-      return;
+      return res.status(200).send('{ "message": "New password created!" }');
     })
     .catch((err) => {
-      throw err;
+      return res.status(500).send('{ "message": "Database error" }');
     });
 });
 
@@ -67,7 +58,7 @@ router.route('/login').post((req, res) => {
     .raw('select * from users where email = ?', [req.body.email])
     .then(function(userObject) {
       if (userObject.rows.length === 0) {
-        throw '{ "message": "User not found" }';
+        return res.status(404).send('{ "message": "User not found" }');
       }
 
       return userObject.rows[0];
@@ -77,13 +68,10 @@ router.route('/login').post((req, res) => {
         throw '{ "message": "Incorrect password" }';
       }
 
-      res.status(200);
-      res.send(userRows);
-      process.exit();
+      return res.status(200).send(userRows);
     })
     .catch((err) => {
-      res.status(400);
-      res.send(err);
+      return res.status(500).send('{ "message": "Database error" }');
     });
 });
 
@@ -92,7 +80,7 @@ router.route('/register').post((req, res) => {
     .raw('select * from users where email = ?', [req.body.email])
     .then(function(userObject) {
       if (userObject.rows.length !== 0) {
-        throw '{ "message": "User already exists" }';
+        return res.status(400).send('{ "message": "User already exists" }');
       }
       return req.body;
     })
@@ -103,12 +91,10 @@ router.route('/register').post((req, res) => {
       ]);
     })
     .then(function(newUserDetail) {
-      res.status(200);
-      res.send(newUserDetail.rows);
+      return res.status(200).send(newUserDetail.rows);
     })
     .catch((err) => {
-      res.status(400);
-      res.send(err);
+      return res.status(500).send('{ "message": "Database error" }');
     });
 });
 

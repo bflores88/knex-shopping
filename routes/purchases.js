@@ -9,8 +9,7 @@ router.route('/:user_id').get((req, res) => {
       [req.params.user_id],
     )
     .then((purchasesObject) => {
-      res.status(200);
-      res.send(purchasesObject.rows[0]);
+      return res.status(200).send(purchasesObject.rows[0]);
     })
     .catch((err) => {
       throw err;
