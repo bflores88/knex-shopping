@@ -6,38 +6,58 @@ router.route('/').get((req, res) => {
   res.send('what');
 });
 
-router.route('/:user_id').get((req, res) => {
-  knex
-    .raw('select * from users where id = ?', [req.params.user_id])
-    .then(function(userObject) {
-      if (userObject.rows.length === 0) {
-        throw err;
-      }
+router
+  .route('/:user_id')
+  .get((req, res) => {
+    knex
+      .raw('select * from users where id = ?', [req.params.user_id])
+      .then(function(userObject) {
+        if (userObject.rows.length === 0) {
+          throw err;
+        }
 
-      res.send(userObject.rows);
-      process.exit();
-    })
-    .catch((err) => {
-      res.send(`{ message: 'User not found' }`);
-    });
-});
+        res.send(userObject.rows);
+        process.exit();
+      })
+      .catch((err) => {
+        res.send(`{ message: 'User not found' }`);
+      });
+  })
+  .delete((req, res) => {
+    knex
+      .raw('select * from users where id = ?', [req.params.user_id])
+      .then(function(userObject) {
+        if (userObject.rows.length === 0) {
+          throw '{ "message": "User ID not found" }';
+        }
+
+        let userDetail = userObject.rows[0];
+
+        return knex.raw('delete from users where id = ? returning *', [userDetail.id]);
+      })
+      .then(function(deleteReturn) {
+        res.send('{ "message": "User id: [user_id] successfully deleted" }');
+      })
+      .catch((err) => {
+        res.send(err);
+      });
+  });
 
 router.route('/:user_id/forgot-password').put((req, res) => {
-  if(req.body.password === ""){
+  if (req.body.password === '') {
     res.send('{ "message": "Insert new password!" }');
     return;
   }
 
   knex
     .raw('update users set password = ? where id = ?', [req.body.password, req.params.user_id])
-    .then(function(){
-
+    .then(function() {
       res.send('{ "message": "New password created!" }');
       return;
     })
-    .catch((err)=> {
+    .catch((err) => {
       throw err;
-    })
+    });
 });
 
 router.route('/login').post((req, res) => {
