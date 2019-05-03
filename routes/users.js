@@ -32,7 +32,7 @@ router
         return knex.raw('delete from users where id = ? returning *', [userDetail.id]);
       })
       .then(function(deleteReturn) {
-        res.send('{ "message": "User id: [user_id] successfully deleted" }');
+        res.send(`{ "message": "User id: ${req.params.user_id} successfully deleted" }`);
       })
       .catch((err) => {
         res.send(err);
