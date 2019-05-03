@@ -23,9 +23,11 @@ router.route('/:user_id').get((req, res) => {
         throw '{ "message": "This user has nothing in the cart"}';
       }
 
+      res.status(200);
       res.send(productInfo.rows);
     })
     .catch((err) => {
+      res.status(400);
       res.send(err);
     });
 });
@@ -58,9 +60,11 @@ router.route('/:user_id/:product_id')
         ]);
       })
       .then((cartObject) => {
+        res.status(200);
         res.send('{ "success": true }');
       })
       .catch((err) => {
+        res.status(400);
         res.send(err);
       });
   })
@@ -98,9 +102,11 @@ router.route('/:user_id/:product_id')
       return knex.raw('delete from carts where user_id = ? and product_id = ? returning *', [params.user_id, params.product_id])
     })
     .then((cartObject) => {
+      res.status(200);
       res.send('{ "success": true }');
     })
     .catch((err) => {
+      res.status(400);
       res.send(err);
     });
 

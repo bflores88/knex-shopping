@@ -11,11 +11,13 @@ router
         if (userObject.rows.length === 0) {
           throw err;
         }
-
+        
+        res.status(200);
         res.send(userObject.rows);
         process.exit();
       })
       .catch((err) => {
+        res.status(400);
         res.send(`{ message: 'User not found' }`);
       });
   })
@@ -32,15 +34,18 @@ router
         return knex.raw('delete from users where id = ? returning *', [userDetail.id]);
       })
       .then(function(deleteReturn) {
+        res.status(200);
         res.send(`{ "message": "User id: ${req.params.user_id} successfully deleted" }`);
       })
       .catch((err) => {
+        res.status(400);
         res.send(err);
       });
   });
 
 router.route('/:user_id/forgot-password').put((req, res) => {
   if (req.body.password === '') {
+    res.status(400);
     res.send('{ "message": "Insert new password!" }');
     return;
   }
@@ -48,6 +53,7 @@ router.route('/:user_id/forgot-password').put((req, res) => {
   knex
     .raw('update users set password = ? where id = ?', [req.body.password, req.params.user_id])
     .then(function() {
+      res.status(400);
       res.send('{ "message": "New password created!" }');
       return;
     })
@@ -71,10 +77,12 @@ router.route('/login').post((req, res) => {
         throw '{ "message": "Incorrect password" }';
       }
 
+      res.status(200);
       res.send(userRows);
       process.exit();
     })
     .catch((err) => {
+      res.status(400);
       res.send(err);
     });
 });
@@ -95,9 +103,11 @@ router.route('/register').post((req, res) => {
       ]);
     })
     .then(function(newUserDetail) {
+      res.status(200);
       res.send(newUserDetail.rows);
     })
     .catch((err) => {
+      res.status(400);
       res.send(err);
     });
 });
