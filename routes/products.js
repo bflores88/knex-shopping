@@ -41,10 +41,13 @@ router
           throw `{ "message": "Product id: ${req.params.product_id} not found" }`;
         }
 
-        return knex.raw('update products set title = ?, description = ?, inventory = ?, price = ? where id = ? returning * ', [req.body.title, req.body.description, req.body.inventory, req.body.price, req.params.product_id])
+        return knex.raw(
+          'update products set title = ?, description = ?, inventory = ?, price = ? where id = ? returning * ',
+          [req.body.title, req.body.description, req.body.inventory, req.body.price, req.params.product_id],
+        );
       })
-      .then(function(updatedProduct){
-        res.send(`{ "message": "Product: ${req.params.product_id} has been updated" }`)
+      .then(function(updatedProduct) {
+        res.send(`{ "message": "Product: ${req.params.product_id} has been updated" }`);
       })
       .catch((err) => {
         res.send(err);
@@ -52,21 +55,20 @@ router
   })
   .delete((req, res) => {
     knex
-    .raw('select * from products where id = ?', [req.params.product_id])
-    .then((productObject) => {
-      if (productObject.rows.length === 0) {
-        throw `{ "message": "Product id: ${req.params.product_id} not found" }`;
-      }
+      .raw('select * from products where id = ?', [req.params.product_id])
+      .then((productObject) => {
+        if (productObject.rows.length === 0) {
+          throw `{ "message": "Product id: ${req.params.product_id} not found" }`;
+        }
 
-      return knex.raw('delete from products where id = ? returning *', [req.params.product_id])
-    })
-    .then(function(deletedProduct){
-      res.send(`{ "message": "Product: ${req.params.product_id} successfully deleted" }`)
-    })
-    .catch((err) => {
-      res.send(err);
-    });
-
+        return knex.raw('delete from products where id = ? returning *', [req.params.product_id]);
+      })
+      .then(function(deletedProduct) {
+        res.send(`{ "message": "Product: ${req.params.product_id} successfully deleted" }`);
+      })
+      .catch((err) => {
+        res.send(err);
+      });
   });
 
 router.route('/new').post((req, res) => {
