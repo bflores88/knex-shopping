@@ -2,10 +2,6 @@ const express = require('express');
 const router = express.Router();
 const knex = require('../database');
 
-router.route('/').get((req, res) => {
-  res.send('what');
-});
-
 router
   .route('/:user_id')
   .get((req, res) => {
