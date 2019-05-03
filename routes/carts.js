@@ -7,7 +7,7 @@ router.route('/:user_id').get((req, res) => {
     .raw('select * from users where id = ?', [req.params.user_id])
     .then((userObject) => {
       if (userObject.rows.length === 0) {
-        throw '{ "message": "This user does not exist!"}';
+        return res.status(404).send('{ "message": "This user does not exist!"}');
       }
 
       return req.params.user_id;
@@ -20,15 +20,13 @@ router.route('/:user_id').get((req, res) => {
     })
     .then((productInfo) => {
       if (productInfo.rows.length === 0) {
-        throw '{ "message": "This user has nothing in the cart"}';
+        return res.status(404).send('{ "message": "This user has nothing in the cart"}');
       }
 
-      res.status(200);
-      res.send(productInfo.rows);
+      return res.status(200).send(productInfo.rows);
     })
     .catch((err) => {
-      res.status(400);
-      res.send(err);
+      return res.status(500).send('{ "message": "Database error"}');
     });
 });
 
@@ -38,7 +36,7 @@ router.route('/:user_id/:product_id')
       .raw('select * from users where id = ?', [req.params.user_id])
       .then((userObject) => {
         if (userObject.rows.length === 0) {
-          throw '{ "message": "This user does not exist!"}';
+          return res.status(404).send('{ "message": "This user does not exist!"}');
         }
 
         return req.params;
@@ -48,7 +46,7 @@ router.route('/:user_id/:product_id')
       })
       .then((productObject) => {
         if (productObject.rows.length === 0) {
-          throw '{ "message": "This product does not exist!"}';
+          return res.status(404).send('{ "message": "This product does not exist!"}');
         }
 
         return req.params;
@@ -60,12 +58,10 @@ router.route('/:user_id/:product_id')
         ]);
       })
       .then((cartObject) => {
-        res.status(200);
-        res.send('{ "success": true }');
+        return res.status(200).send('{ "success": true }');
       })
       .catch((err) => {
-        res.status(400);
-        res.send(err);
+        return res.status(500).send('{ "message": "Database error"}');
       });
   })
   .delete((req, res) => {
@@ -73,7 +69,7 @@ router.route('/:user_id/:product_id')
     .raw('select * from users where id = ?', [req.params.user_id])
     .then((userObject) => {
       if (userObject.rows.length === 0) {
-        throw '{ "message": "This user does not exist!"}';
+        return res.status(404).send('{ "message": "This user does not exist!"}');
       }
 
       return req.params;
@@ -83,7 +79,7 @@ router.route('/:user_id/:product_id')
     })
     .then((productObject) => {
       if (productObject.rows.length === 0) {
-        throw '{ "message": "This product does not exist!"}';
+        return res.status(404).send('{ "message": "This product does not exist!"}');
       }
 
       return req.params;
@@ -93,7 +89,7 @@ router.route('/:user_id/:product_id')
     })
     .then((productObject) => {
       if(productObject.rows.length === 0){
-        throw `{ "message": "User ID: ${req.params.user_id} does not have any products with Product ID: ${req.params.product_id} in the cart!"}`;
+        return res.status(404).send(`{ "message": "User ID: ${req.params.user_id} does not have any products with Product ID: ${req.params.product_id} in the cart!"}`);
       }
 
       return req.params;
@@ -102,12 +98,10 @@ router.route('/:user_id/:product_id')
       return knex.raw('delete from carts where user_id = ? and product_id = ? returning *', [params.user_id, params.product_id])
     })
     .then((cartObject) => {
-      res.status(200);
-      res.send('{ "success": true }');
+      return res.status(200).send('{ "success": true }');
     })
     .catch((err) => {
-      res.status(400);
-      res.send(err);
+      return res.status(500).send('{ "message": "Database error"}');
     });
 
   });
