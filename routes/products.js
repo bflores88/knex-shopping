@@ -23,7 +23,7 @@ router
           return res.status(404).send('{ "message": "Product not found" }');
         }
 
-        return res.status(200).send(productObject.rows);
+        return res.status(200).send(productObject.rows[0]);
       })
       .catch((err) => {
         return res.status(500).send('{ "message": "Database error" }');
@@ -97,7 +97,7 @@ router.route('/new').post((req, res) => {
           newProduct.price,
         ])
         .then(function(newProductDetail) {
-          return res.status(200).send(newProductDetail.rows);
+          return res.status(200).send(newProductDetail.rows[0]);
         });
     })
     .catch((err) => {

@@ -12,7 +12,8 @@ router
           return res.status(404).send('{ "message": "User not found!" }');
         }
 
-        return res.status(200).send(userObject.rows);
+        let userDetail = userObject.rows[0]
+        return res.status(200).send(userDetail);
       })
       .catch((err) => {
         return res.status(500).send(`{ message: 'Database error' }`);
@@ -66,7 +67,7 @@ router.route('/login').post((req, res) => {
         return res.status(400).send('{ "message": "Incorrect password" }');
       }
 
-      return res.status(200).send(userRows);
+      return res.status(200).send(productDetail);
     })
     .catch((err) => {
       return res.status(500).send('{ "message": "Database error" }');
@@ -80,11 +81,12 @@ router.route('/register').post((req, res) => {
       if (userObject.rows.length !== 0) {
         return res.status(400).send('{ "message": "User already exists" }');
       }
-      let newUser = req.body;
+ 
       return knex
-        .raw('insert into users (email, password) values (?, ?) returning *', [newUser.email, newUser.password])
+        .raw('insert into users (email, password) values (?, ?) returning *', [req.body.email, req.body.password])
         .then(function(newUserDetail) {
-          return res.status(200).send(newUserDetail.rows);
+          let returnUserDetail = newUserDetail.rows[0];
+          return res.status(200).send(returnUserDetail);
         });
     })
     .catch((err) => {
