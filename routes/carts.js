@@ -15,7 +15,6 @@ router.route('/:user_id').get((req, res) => {
             req.params.user_id
           ])
           .then((productInfo) => {
-            console.log(productInfo);
             if (productInfo.rows.length === 0) {
               return res.status(404).send('{ "message": "This user has nothing in the cart"}');
             }
