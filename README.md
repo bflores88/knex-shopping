@@ -1,5 +1,13 @@
 # Knex Shopping
 
+## How to Use
+
+1. Clone or download repository
+2. Install dependencies: `npm install`
+3. Run server: `nodemon server.js`
+4. Run Docker container: `docker-compose up`
+5. Open Postman and enter any of the endpoints below.
+
 ## Objective
 
 We will be building a RESTful, JSON resource API shopping cart application! This project will be entirely back-end, meaning we can test all of our endpoints through `Postman` app.
